@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class Car extends Vehicle {
 
-    public Car(String brand, String model, BigDecimal price, VehicleStatus vehicleStatus) {
-        super(brand, model, price, vehicleStatus);
+    public Car(String brand, String model, Integer productionYear, BigDecimal price, VehicleStatus vehicleStatus) {
+        super(brand, model, productionYear, price, vehicleStatus);
     }
 }

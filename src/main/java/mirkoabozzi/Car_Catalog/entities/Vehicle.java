@@ -27,14 +27,17 @@ public abstract class Vehicle {
     @NotNull
     private String model;
     @NotNull
+    private Integer productionYear;
+    @NotNull
     private BigDecimal price;
     @NotNull
     @Enumerated(EnumType.STRING)
     private VehicleStatus vehicleStatus;
 
-    public Vehicle(String brand, String model, BigDecimal price, VehicleStatus vehicleStatus) {
+    public Vehicle(String brand, String model, Integer productionYear, BigDecimal price, VehicleStatus vehicleStatus) {
         this.brand = brand;
         this.model = model;
+        this.productionYear = productionYear;
         this.price = price;
         this.vehicleStatus = vehicleStatus;
     }

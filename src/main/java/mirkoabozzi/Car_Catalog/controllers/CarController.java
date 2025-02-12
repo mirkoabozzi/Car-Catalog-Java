@@ -1,0 +1,44 @@
+package mirkoabozzi.Car_Catalog.controllers;
+
+import mirkoabozzi.Car_Catalog.dto.CarDTO;
+import mirkoabozzi.Car_Catalog.entities.Car;
+import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
+import mirkoabozzi.Car_Catalog.services.CarService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/cars")
+public class CarController {
+    @Autowired
+    private CarService carService;
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Car save(@RequestBody @Validated CarDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
+            throw new BadRequestException("Body error: " + msg);
+        } else {
+            return this.carService.saveCar(body);
+        }
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public Page<Car> getAll(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "50") int size,
+                            @RequestParam(defaultValue = "brand") String sortBy
+    ) {
+        return this.carService.findAll(page, size, sortBy);
+    }
+
+
+}
