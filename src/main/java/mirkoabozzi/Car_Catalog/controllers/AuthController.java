@@ -1,8 +1,11 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
+import mirkoabozzi.Car_Catalog.dto.UserLoginDTO;
+import mirkoabozzi.Car_Catalog.dto.UserLoginRespDTO;
 import mirkoabozzi.Car_Catalog.dto.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
+import mirkoabozzi.Car_Catalog.services.AuthService;
 import mirkoabozzi.Car_Catalog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
 public class AuthController {
 
     @Autowired
+    private AuthService authService;
+    @Autowired
     private UserService userService;
 
     @PostMapping("/register")
@@ -29,6 +34,17 @@ public class AuthController {
         } else {
             return this.userService.seveUser(body);
         }
+    }
+
+    @GetMapping("/login")
+    public UserLoginRespDTO login(@RequestBody @Validated UserLoginDTO body, BindingResult validation) {
+        if (validation.hasErrors()) {
+            String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
+            throw new BadRequestException("Body error: " + msg);
+        } else {
+            return new UserLoginRespDTO(this.authService.checkCredentialsAndGenerateToken(body));
+        }
+
     }
 
 }
