@@ -1,6 +1,7 @@
 package mirkoabozzi.Car_Catalog.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,5 +36,15 @@ public class ExceptionsHandler {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
 }

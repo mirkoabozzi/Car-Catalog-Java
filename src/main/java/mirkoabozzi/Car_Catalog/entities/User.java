@@ -31,6 +31,8 @@ public class User implements UserDetails {
     @NotNull
     private String name;
     @NotNull
+    private String surname;
+    @NotNull
     private String email;
     @NotNull
     private String password;
@@ -40,8 +42,9 @@ public class User implements UserDetails {
     @NotNull
     private Boolean isEnabled;
 
-    public User(String name, String email, String password, UserRole userRole, Boolean isEnabled) {
+    public User(String name, String surname, String email, String password, UserRole userRole, Boolean isEnabled) {
         this.name = name;
+        this.surname = surname;
         this.email = email;
         this.password = password;
         this.userRole = userRole;

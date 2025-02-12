@@ -1,5 +1,7 @@
 package mirkoabozzi.Car_Catalog.services;
 
+import mirkoabozzi.Car_Catalog.dto.UpdateUserRoleDTO;
+import mirkoabozzi.Car_Catalog.dto.UserDTO;
 import mirkoabozzi.Car_Catalog.dto.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
@@ -33,11 +35,33 @@ public class UserService {
 
         User newUser = new User(
                 body.name(),
+                body.surname(),
                 body.email(),
                 this.passwordEncoder.encode(body.password()),
                 (body.email().equals("mirko.abozzi@gmail.com") ? UserRole.ADMIN : UserRole.USER),
                 true
         );
         return this.userRepository.save(newUser);
+    }
+
+    public User updateUser(User authUser, UserDTO body) {
+        if (!authUser.getEmail().equals(body.email()) && this.userRepository.existsByEmail(body.email()))
+            throw new BadRequestException("Email " + body.email() + " already on DB");
+
+        authUser.setName(body.name());
+        authUser.setSurname(body.surname());
+        authUser.setEmail(body.email());
+        return this.userRepository.save(authUser);
+    }
+
+    public void deleteUser(UUID id) {
+        User userFound = this.findById(id);
+        this.userRepository.delete(userFound);
+    }
+
+    public User updateUserRole(UUID id, UpdateUserRoleDTO updateUserRoleDTO) {
+        User userFound = this.findById(id);
+        userFound.setUserRole(UserRole.valueOf(updateUserRoleDTO.userRole().toUpperCase()));
+        return this.userRepository.save(userFound);
     }
 }
