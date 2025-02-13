@@ -29,7 +29,7 @@ public class UserService {
         return this.userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email " + email + " not found on DB"));
     }
 
-    public User seveUser(UserRegistrationDTO body) {
+    public User saveUser(UserRegistrationDTO body) {
         if (this.userRepository.existsByEmail(body.email()))
             throw new BadRequestException("Email " + body.email() + " already on DB");
 

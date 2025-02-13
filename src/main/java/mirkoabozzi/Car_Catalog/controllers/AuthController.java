@@ -32,7 +32,7 @@ public class AuthController {
             String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
             throw new BadRequestException("Body error: " + msg);
         } else {
-            return this.userService.seveUser(body);
+            return this.userService.saveUser(body);
         }
     }
 
