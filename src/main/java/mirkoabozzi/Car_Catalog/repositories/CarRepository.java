@@ -20,5 +20,5 @@ public interface CarRepository extends JpaRepository<Car, UUID> {
     @Query("SELECT c FROM Car c WHERE c.price BETWEEN :min AND :max")
     Page<Car> findByPriceRange(Pageable pageable, @Param("min") BigDecimal min, @Param("max") BigDecimal max);
 
-    Page<Car> findByVehicleStatus(Pageable pageable, VehicleStatus status);
+    Page<Car> findByVehicleStatus(Pageable pageable, VehicleStatus vehicleStatus);
 }

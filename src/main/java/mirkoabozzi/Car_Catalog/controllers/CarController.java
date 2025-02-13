@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,5 +41,35 @@ public class CarController {
         return this.carService.findAll(page, size, sortBy);
     }
 
+    @GetMapping("/brand")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public Page<Car> findByBrand(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "50") int size,
+                                 @RequestParam(defaultValue = "productionYear") String sortBy,
+                                 @RequestParam String brand
+    ) {
+        return this.carService.findByBrand(page, size, sortBy, brand);
+    }
+
+    @GetMapping("/price")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public Page<Car> getCarsByPriceRange(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "50") int size,
+                                         @RequestParam(defaultValue = "price") String sortBy,
+                                         @RequestParam(defaultValue = "0") BigDecimal min,
+                                         @RequestParam BigDecimal max
+    ) {
+        return this.carService.findByPriceRange(page, size, sortBy, min, max);
+    }
+
+    @GetMapping("/status")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public Page<Car> geCarsByStatus(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "50") int size,
+                                    @RequestParam(defaultValue = "brand") String sortBy,
+                                    @RequestParam(defaultValue = "AVAILABLE") String vehicleStatus
+    ) {
+        return this.carService.findCarsByStatus(page, size, sortBy, vehicleStatus);
+    }
 
 }

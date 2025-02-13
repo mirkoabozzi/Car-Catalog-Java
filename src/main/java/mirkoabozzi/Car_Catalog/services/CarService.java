@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class CarService {
     @Autowired
@@ -32,5 +34,23 @@ public class CarService {
         if (page > 100) page = 100;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.carRepository.findAll(pageable);
+    }
+
+    public Page<Car> findByBrand(int page, int size, String sortBy, String brand) {
+        if (page > 100) page = 100;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.carRepository.findByBrandIgnoreCase(pageable, brand);
+    }
+
+    public Page<Car> findByPriceRange(int page, int size, String sortBy, BigDecimal min, BigDecimal max) {
+        if (page > 100) page = 100;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.carRepository.findByPriceRange(pageable, min, max);
+    }
+
+    public Page<Car> findCarsByStatus(int page, int size, String sortBy, String vehicleStatus) {
+        if (page > 100) page = 100;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.carRepository.findByVehicleStatus(pageable, VehicleStatus.valueOf(vehicleStatus.toUpperCase()));
     }
 }
