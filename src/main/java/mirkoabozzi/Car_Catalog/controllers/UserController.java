@@ -8,6 +8,7 @@ import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,6 +34,15 @@ public class UserController {
     @PutMapping("/me")
     public User updateMyProfile(@AuthenticationPrincipal User authUser, @RequestBody UserDTO body) {
         return this.userService.updateUser(authUser, body);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<User> findAll(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "50") int size,
+                              @RequestParam(defaultValue = "surname") String sortBy
+    ) {
+        return this.userService.findAll(page, size, sortBy);
     }
 
     @DeleteMapping("/{id}")
