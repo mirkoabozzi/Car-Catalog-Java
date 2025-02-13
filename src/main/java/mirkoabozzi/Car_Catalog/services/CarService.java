@@ -1,8 +1,10 @@
 package mirkoabozzi.Car_Catalog.services;
 
 import mirkoabozzi.Car_Catalog.dto.CarDTO;
+import mirkoabozzi.Car_Catalog.dto.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
+import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
 import mirkoabozzi.Car_Catalog.repositories.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class CarService {
@@ -52,5 +55,32 @@ public class CarService {
         if (page > 100) page = 100;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.carRepository.findByVehicleStatus(pageable, VehicleStatus.valueOf(vehicleStatus.toUpperCase()));
+    }
+
+    private Car findById(UUID id) {
+        return this.carRepository.findById(id).orElseThrow(() -> new NotFoundException("Car with id " + id + " not found on DB"));
+    }
+
+    public Car updateCar(UUID id, CarDTO body) {
+        Car carFound = this.findById(id);
+
+        carFound.setBrand(body.brand());
+        carFound.setModel(body.model());
+        carFound.setPrice(body.price());
+        carFound.setProductionYear(body.productionYear());
+        carFound.setVehicleStatus(VehicleStatus.valueOf(body.vehicleStatus().toUpperCase()));
+
+        return this.carRepository.save(carFound);
+    }
+
+    public Car updateCarStatus(UUID id, UpdateCarStatusDTO body) {
+        Car carFound = this.findById(id);
+        carFound.setVehicleStatus(VehicleStatus.valueOf(body.vehicleStatus().toUpperCase()));
+        return this.carRepository.save(carFound);
+    }
+
+    public void deleteCar(UUID id) {
+        Car carFound = this.findById(id);
+        carRepository.delete(carFound);
     }
 }
