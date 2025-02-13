@@ -11,10 +11,11 @@
 
 <h3>Endpoint available</h3>
 
+- 🔎 Cars filter
 - 🔎 Car search by brand
 - 🔎 Car search by price range
 - 🔎 Car search by status (AVAILABLE / SOLD)
-- ⚙️ Full CRUD Car & User Management
+- ⚙️ Full CRUD Cars & Users Management
 - ⚒️ OpenApi Swagger Docs
 - 📝 JUnit 5 Tests
 
