@@ -1,5 +1,6 @@
 package mirkoabozzi.Car_Catalog.exceptions;
 
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,12 @@ public class ExceptionsHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleNoResourceFoundException(NoResourceFoundException ex) {
+        return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
     }
 }

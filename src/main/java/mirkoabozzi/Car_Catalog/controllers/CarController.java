@@ -105,4 +105,17 @@ public class CarController {
     public void deleteCar(@PathVariable UUID id) {
         this.carService.deleteCar(id);
     }
+
+    @GetMapping("/filter")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public Page<Car> filterCars(@RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "50") int size,
+                                @RequestParam(defaultValue = "brand") String sortBy,
+                                @RequestParam(required = false) String brand,
+                                @RequestParam(required = false, defaultValue = "0") BigDecimal min,
+                                @RequestParam(required = false) BigDecimal max,
+                                @RequestParam(required = false) String vehicleStatus
+    ) {
+        return this.carService.filterCar(page, size, sortBy, brand, min, max, vehicleStatus);
+    }
 }
