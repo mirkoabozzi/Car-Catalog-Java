@@ -50,7 +50,11 @@ public class JwtFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
         String path = request.getServletPath();
-        List<String> patternList = List.of("/api/auth/**");
+        List<String> patternList = List.of(
+                "/api/auth/**",
+                "/swagger-ui/**",
+                "/v3/api-docs/**"
+        );
         AntPathMatcher antPathMatcher = new AntPathMatcher();
 
         return patternList.stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));

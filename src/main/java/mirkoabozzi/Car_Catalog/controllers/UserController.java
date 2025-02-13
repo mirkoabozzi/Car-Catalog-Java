@@ -1,5 +1,6 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import mirkoabozzi.Car_Catalog.dto.UpdateUserRoleDTO;
 import mirkoabozzi.Car_Catalog.dto.UserDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "User")
 public class UserController {
     @Autowired
     private UserService userService;

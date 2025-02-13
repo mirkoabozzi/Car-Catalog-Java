@@ -1,5 +1,6 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import mirkoabozzi.Car_Catalog.dto.UserLoginDTO;
 import mirkoabozzi.Car_Catalog.dto.UserLoginRespDTO;
 import mirkoabozzi.Car_Catalog.dto.UserRegistrationDTO;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authorization", description = "Public endpoint")
 public class AuthController {
 
     @Autowired

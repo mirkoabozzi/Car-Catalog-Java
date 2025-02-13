@@ -1,5 +1,6 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import mirkoabozzi.Car_Catalog.dto.CarDTO;
 import mirkoabozzi.Car_Catalog.dto.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cars")
+@Tag(name = "Car")
 public class CarController {
     @Autowired
     private CarService carService;
