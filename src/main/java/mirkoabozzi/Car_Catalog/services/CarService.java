@@ -6,11 +6,13 @@ import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
 import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
 import mirkoabozzi.Car_Catalog.repositories.CarRepository;
+import mirkoabozzi.Car_Catalog.specification.CarSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -82,5 +84,17 @@ public class CarService {
     public void deleteCar(UUID id) {
         Car carFound = this.findById(id);
         carRepository.delete(carFound);
+    }
+
+    public Page<Car> filterCar(int page, int size, String sortBy, String brand, BigDecimal min, BigDecimal max, String vehicleStatus) {
+        if (page > 100) page = 100;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Specification<Car> specification = Specification.where(null);
+
+        if (brand != null) specification = specification.and(CarSpecification.hasBrand(brand));
+        if (min != null || max != null) specification = specification.and(CarSpecification.hasPriceRange(min, max));
+        if (vehicleStatus != null) specification = specification.and(CarSpecification.hasStatus(vehicleStatus));
+
+        return this.carRepository.findAll(specification, pageable);
     }
 }
