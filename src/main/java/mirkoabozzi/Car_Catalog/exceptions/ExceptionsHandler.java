@@ -2,6 +2,7 @@ package mirkoabozzi.Car_Catalog.exceptions;
 
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -59,6 +60,12 @@ public class ExceptionsHandler {
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
+        return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
     }
 }
