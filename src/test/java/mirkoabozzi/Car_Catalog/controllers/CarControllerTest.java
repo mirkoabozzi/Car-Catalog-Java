@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -39,7 +40,12 @@ class CarControllerTest {
                         .header("Authorization", adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newCar))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.brand").value("New"))
+                .andExpect(jsonPath("$.model").value("Car"))
+                .andExpect(jsonPath("$.price").value(10000.00))
+                .andExpect(jsonPath("$.productionYear").value(2025))
+                .andExpect(jsonPath("$.vehicleStatus").value("AVAILABLE"));
     }
 
     @Test
