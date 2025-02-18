@@ -1,11 +1,13 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import mirkoabozzi.Car_Catalog.dto.CarDTO;
-import mirkoabozzi.Car_Catalog.dto.UpdateCarStatusDTO;
+import mirkoabozzi.Car_Catalog.dto.request.CarDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UpdateCarStatusDTO;
+import mirkoabozzi.Car_Catalog.dto.response.CarRespDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.CarService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
@@ -25,77 +27,87 @@ import java.util.stream.Collectors;
 public class CarController {
     @Autowired
     private CarService carService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Car save(@RequestBody @Validated CarDTO body, BindingResult validation) {
+    public CarRespDTO save(@RequestBody @Validated CarDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
             throw new BadRequestException("Body error: " + msg);
         } else {
-            return this.carService.saveCar(body);
+            Car car = this.carService.saveCar(body);
+            return modelMapper.map(car, CarRespDTO.class);
         }
     }
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Page<Car> getAll(@RequestParam(defaultValue = "0") int page,
-                            @RequestParam(defaultValue = "50") int size,
-                            @RequestParam(defaultValue = "brand") String sortBy
+    public Page<CarRespDTO> getAll(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "50") int size,
+                                   @RequestParam(defaultValue = "brand") String sortBy
     ) {
-        return this.carService.findAll(page, size, sortBy);
+        Page<Car> carPage = this.carService.findAll(page, size, sortBy);
+        return carPage.map(car -> modelMapper.map(car, CarRespDTO.class));
+
     }
 
     @GetMapping("/brand")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Page<Car> findByBrand(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "50") int size,
-                                 @RequestParam(defaultValue = "productionYear") String sortBy,
-                                 @RequestParam String brand
+    public Page<CarRespDTO> findByBrand(@RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "50") int size,
+                                        @RequestParam(defaultValue = "productionYear") String sortBy,
+                                        @RequestParam String brand
     ) {
-        return this.carService.findByBrand(page, size, sortBy, brand);
+        Page<Car> carPage = this.carService.findByBrand(page, size, sortBy, brand);
+        return carPage.map(car -> modelMapper.map(car, CarRespDTO.class));
     }
 
     @GetMapping("/price")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Page<Car> getCarsByPriceRange(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "50") int size,
-                                         @RequestParam(defaultValue = "price") String sortBy,
-                                         @RequestParam(defaultValue = "0") BigDecimal min,
-                                         @RequestParam BigDecimal max
+    public Page<CarRespDTO> getCarsByPriceRange(@RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "50") int size,
+                                                @RequestParam(defaultValue = "price") String sortBy,
+                                                @RequestParam(defaultValue = "0") BigDecimal min,
+                                                @RequestParam BigDecimal max
     ) {
-        return this.carService.findByPriceRange(page, size, sortBy, min, max);
+        Page<Car> carPage = this.carService.findByPriceRange(page, size, sortBy, min, max);
+        return carPage.map(car -> modelMapper.map(car, CarRespDTO.class));
     }
 
     @GetMapping("/status")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Page<Car> geCarsByStatus(@RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "50") int size,
-                                    @RequestParam(defaultValue = "brand") String sortBy,
-                                    @RequestParam(defaultValue = "AVAILABLE") String vehicleStatus
+    public Page<CarRespDTO> geCarsByStatus(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "50") int size,
+                                           @RequestParam(defaultValue = "brand") String sortBy,
+                                           @RequestParam(defaultValue = "AVAILABLE") String vehicleStatus
     ) {
-        return this.carService.findCarsByStatus(page, size, sortBy, vehicleStatus);
+        Page<Car> carPage = this.carService.findCarsByStatus(page, size, sortBy, vehicleStatus);
+        return carPage.map(car -> modelMapper.map(car, CarRespDTO.class));
     }
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Car updateCar(@PathVariable UUID id, @RequestBody @Validated CarDTO body, BindingResult validation) {
+    public CarRespDTO updateCar(@PathVariable UUID id, @RequestBody @Validated CarDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
             throw new BadRequestException("Body error: " + msg);
         } else {
-            return this.carService.updateCar(id, body);
+            Car car = this.carService.updateCar(id, body);
+            return this.modelMapper.map(car, CarRespDTO.class);
         }
     }
 
     @PatchMapping("{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Car updateCarStatus(@PathVariable UUID id, @RequestBody @Validated UpdateCarStatusDTO body, BindingResult validation) {
+    public CarRespDTO updateCarStatus(@PathVariable UUID id, @RequestBody @Validated UpdateCarStatusDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
             throw new BadRequestException("Body error: " + msg);
         } else {
-            return this.carService.updateCarStatus(id, body);
+            Car car = this.carService.updateCarStatus(id, body);
+            return this.modelMapper.map(car, CarRespDTO.class);
         }
     }
 
@@ -108,14 +120,15 @@ public class CarController {
 
     @GetMapping("/filter")
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
-    public Page<Car> filterCars(@RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "50") int size,
-                                @RequestParam(defaultValue = "brand") String sortBy,
-                                @RequestParam(required = false) String brand,
-                                @RequestParam(required = false, defaultValue = "0") BigDecimal min,
-                                @RequestParam(required = false) BigDecimal max,
-                                @RequestParam(required = false) String vehicleStatus
+    public Page<CarRespDTO> filterCars(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "50") int size,
+                                       @RequestParam(defaultValue = "brand") String sortBy,
+                                       @RequestParam(required = false) String brand,
+                                       @RequestParam(required = false, defaultValue = "0") BigDecimal min,
+                                       @RequestParam(required = false) BigDecimal max,
+                                       @RequestParam(required = false) String vehicleStatus
     ) {
-        return this.carService.filterCar(page, size, sortBy, brand, min, max, vehicleStatus);
+        Page<Car> carPage = this.carService.filterCar(page, size, sortBy, brand, min, max, vehicleStatus);
+        return carPage.map(car -> modelMapper.map(car, CarRespDTO.class));
     }
 }

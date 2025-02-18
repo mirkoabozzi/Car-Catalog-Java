@@ -1,8 +1,8 @@
 package mirkoabozzi.Car_Catalog.services;
 
-import mirkoabozzi.Car_Catalog.dto.UpdateUserRoleDTO;
-import mirkoabozzi.Car_Catalog.dto.UserDTO;
-import mirkoabozzi.Car_Catalog.dto.UserRegistrationDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UpdateUserRoleDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;

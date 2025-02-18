@@ -1,7 +1,7 @@
 package mirkoabozzi.Car_Catalog.services;
 
-import mirkoabozzi.Car_Catalog.dto.CarDTO;
-import mirkoabozzi.Car_Catalog.dto.UpdateCarStatusDTO;
+import mirkoabozzi.Car_Catalog.dto.request.CarDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
 import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;

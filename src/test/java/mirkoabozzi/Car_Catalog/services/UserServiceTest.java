@@ -1,6 +1,6 @@
 package mirkoabozzi.Car_Catalog.services;
 
-import mirkoabozzi.Car_Catalog.dto.UserRegistrationDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
 import mirkoabozzi.Car_Catalog.repositories.UserRepository;

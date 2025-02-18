@@ -1,6 +1,6 @@
 package mirkoabozzi.Car_Catalog.services;
 
-import mirkoabozzi.Car_Catalog.dto.UserLoginDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserLoginDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.UnauthorizedException;
 import mirkoabozzi.Car_Catalog.security.JWTTools;

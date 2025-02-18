@@ -1,4 +1,4 @@
-package mirkoabozzi.Car_Catalog.dto;
+package mirkoabozzi.Car_Catalog.dto.request;
 
 import jakarta.validation.constraints.*;
 

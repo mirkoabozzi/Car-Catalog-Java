@@ -1,13 +1,9 @@
-package mirkoabozzi.Car_Catalog.dto;
+package mirkoabozzi.Car_Catalog.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
-public record UserRegistrationDTO(
-        @NotEmpty(message = "Name is required. ")
-        String name,
-        @NotEmpty(message = "Surname is required. ")
-        String surname,
+public record UserLoginDTO(
         @NotEmpty(message = "Email is required. ")
         @Email(message = "Invalid email address. ")
         String email,

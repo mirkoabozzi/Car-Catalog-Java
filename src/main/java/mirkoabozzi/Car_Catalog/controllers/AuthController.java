@@ -1,9 +1,9 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import mirkoabozzi.Car_Catalog.dto.UserLoginDTO;
-import mirkoabozzi.Car_Catalog.dto.UserLoginRespDTO;
-import mirkoabozzi.Car_Catalog.dto.UserRegistrationDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserLoginDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
+import mirkoabozzi.Car_Catalog.dto.response.UserLoginRespDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.AuthService;
