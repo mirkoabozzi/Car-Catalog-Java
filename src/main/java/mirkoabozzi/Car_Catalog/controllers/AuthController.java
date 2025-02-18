@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mirkoabozzi.Car_Catalog.dto.request.UserLoginDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.dto.response.UserLoginRespDTO;
+import mirkoabozzi.Car_Catalog.dto.response.UserRespDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.AuthService;
 import mirkoabozzi.Car_Catalog.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -26,15 +28,18 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public User saveUser(@RequestBody @Validated UserRegistrationDTO body, BindingResult validation) {
+    public UserRespDTO saveUser(@RequestBody @Validated UserRegistrationDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
             throw new BadRequestException("Body error: " + msg);
         } else {
-            return this.userService.saveUser(body);
+            User user = this.userService.saveUser(body);
+            return this.modelMapper.map(user, UserRespDTO.class);
         }
     }
 

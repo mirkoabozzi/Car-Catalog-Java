@@ -3,9 +3,11 @@ package mirkoabozzi.Car_Catalog.controllers;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mirkoabozzi.Car_Catalog.dto.request.UpdateUserRoleDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserDTO;
+import mirkoabozzi.Car_Catalog.dto.response.UserRespDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
@@ -25,24 +27,28 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/me")
-    public User getMyProfile(@AuthenticationPrincipal User authUser) {
-        return authUser;
+    public UserRespDTO getMyProfile(@AuthenticationPrincipal User authUser) {
+        return this.modelMapper.map(authUser, UserRespDTO.class);
     }
 
     @PutMapping("/me")
-    public User updateMyProfile(@AuthenticationPrincipal User authUser, @RequestBody UserDTO body) {
-        return this.userService.updateUser(authUser, body);
+    public UserRespDTO updateMyProfile(@AuthenticationPrincipal User authUser, @RequestBody UserDTO body) {
+        User user = this.userService.updateUser(authUser, body);
+        return this.modelMapper.map(user, UserRespDTO.class);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Page<User> findAll(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "50") int size,
-                              @RequestParam(defaultValue = "surname") String sortBy
+    public Page<UserRespDTO> findAll(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "50") int size,
+                                     @RequestParam(defaultValue = "surname") String sortBy
     ) {
-        return this.userService.findAll(page, size, sortBy);
+        Page<User> userPage = this.userService.findAll(page, size, sortBy);
+        return userPage.map(user -> modelMapper.map(user, UserRespDTO.class));
     }
 
     @DeleteMapping("/{id}")
@@ -54,12 +60,13 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public User updateRole(@PathVariable UUID id, @RequestBody @Validated UpdateUserRoleDTO body, BindingResult validation) {
+    public UserRespDTO updateRole(@PathVariable UUID id, @RequestBody @Validated UpdateUserRoleDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
             throw new BadRequestException("Body error: " + msg);
         } else {
-            return this.userService.updateUserRole(id, body);
+            User user = this.userService.updateUserRole(id, body);
+            return this.modelMapper.map(user, UserRespDTO.class);
         }
     }
 }
