@@ -1,6 +1,7 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.UserLoginDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.dto.response.UserLoginRespDTO;
@@ -10,7 +11,6 @@ import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.AuthService;
 import mirkoabozzi.Car_Catalog.services.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -20,16 +20,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 @Tag(name = "Authorization", description = "Public endpoint")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ModelMapper modelMapper;
+    private final AuthService authService;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)

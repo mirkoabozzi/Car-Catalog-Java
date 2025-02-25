@@ -1,6 +1,7 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.UpdateUserRoleDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserDTO;
 import mirkoabozzi.Car_Catalog.dto.response.UserRespDTO;
@@ -8,7 +9,6 @@ import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -22,13 +22,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/users")
 @Tag(name = "User")
 public class UserController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/me")
     public UserRespDTO getMyProfile(@AuthenticationPrincipal User authUser) {

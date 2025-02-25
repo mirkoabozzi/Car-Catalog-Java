@@ -1,5 +1,6 @@
 package mirkoabozzi.Car_Catalog.services;
 
+import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.UpdateUserRoleDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
@@ -8,7 +9,6 @@ import mirkoabozzi.Car_Catalog.enums.UserRole;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
 import mirkoabozzi.Car_Catalog.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User findById(UUID id) {
         return this.userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id " + id + " not found on DB"));

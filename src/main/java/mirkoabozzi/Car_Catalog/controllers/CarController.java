@@ -1,6 +1,7 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.CarDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.dto.response.CarRespDTO;
@@ -8,7 +9,6 @@ import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.CarService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -22,13 +22,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/cars")
 @Tag(name = "Car")
 public class CarController {
-    @Autowired
-    private CarService carService;
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private final CarService carService;
+    private final ModelMapper modelMapper;
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")

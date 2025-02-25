@@ -1,4 +1,4 @@
-package mirkoabozzi.Car_Catalog.security;
+package mirkoabozzi.Car_Catalog.exceptions;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

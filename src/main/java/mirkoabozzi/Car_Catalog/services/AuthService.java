@@ -1,22 +1,20 @@
 package mirkoabozzi.Car_Catalog.services;
 
+import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.UserLoginDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.exceptions.UnauthorizedException;
 import mirkoabozzi.Car_Catalog.security.JWTTools;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JWTTools jwtTools;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final JWTTools jwtTools;
 
     public String checkCredentialsAndGenerateToken(UserLoginDTO body) {
 

@@ -1,5 +1,6 @@
 package mirkoabozzi.Car_Catalog.services;
 
+import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.CarDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
@@ -7,7 +8,6 @@ import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
 import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
 import mirkoabozzi.Car_Catalog.repositories.CarRepository;
 import mirkoabozzi.Car_Catalog.specification.CarSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +19,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class CarService {
-    @Autowired
-    private CarRepository carRepository;
+
+    private final CarRepository carRepository;
 
     public Car saveCar(CarDTO body) {
 
