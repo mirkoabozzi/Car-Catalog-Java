@@ -1,12 +1,8 @@
 package mirkoabozzi.Car_Catalog.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +17,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIgnoreProperties({"password", "authorities", "enabled", "accountNonLocked", "credentialsNonExpired", "accountNonExpired", "username",})
+@Builder
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue
@@ -41,15 +38,6 @@ public class User implements UserDetails {
     private UserRole userRole;
     @NotNull
     private Boolean isEnabled;
-
-    public User(String name, String surname, String email, String password, UserRole userRole, Boolean isEnabled) {
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.userRole = userRole;
-        this.isEnabled = isEnabled;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

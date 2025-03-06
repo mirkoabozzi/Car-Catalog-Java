@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 public abstract class Vehicle {
     @Id
     @GeneratedValue
@@ -33,12 +35,4 @@ public abstract class Vehicle {
     @NotNull
     @Enumerated(EnumType.STRING)
     private VehicleStatus vehicleStatus;
-
-    public Vehicle(String brand, String model, Integer productionYear, BigDecimal price, VehicleStatus vehicleStatus) {
-        this.brand = brand;
-        this.model = model;
-        this.productionYear = productionYear;
-        this.price = price;
-        this.vehicleStatus = vehicleStatus;
-    }
 }

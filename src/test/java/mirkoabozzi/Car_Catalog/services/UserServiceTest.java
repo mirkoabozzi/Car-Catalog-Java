@@ -3,6 +3,7 @@ package mirkoabozzi.Car_Catalog.services;
 import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
+import mirkoabozzi.Car_Catalog.mappers.UserMapper;
 import mirkoabozzi.Car_Catalog.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
+
     @InjectMocks
     private UserService userService;
 
@@ -39,9 +43,15 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         this.userRegistrationDTO = new UserRegistrationDTO("User", "Test", "user@test.com", "password");
-        this.user = new User("User", "test", "user@test.com", "1234", UserRole.ADMIN, true);
+        this.user = User.builder()
+                .name("User")
+                .surname("test")
+                .email("user@test.com")
+                .password("password")
+                .userRole(UserRole.ADMIN)
+                .isEnabled(true)
+                .build();
         this.id = UUID.randomUUID();
-
     }
 
 
@@ -68,7 +78,7 @@ class UserServiceTest {
     @Test
     void saveUser() {
         when(this.userRepository.existsByEmail(anyString())).thenReturn(false);
-        when(this.passwordEncoder.encode(anyString())).thenReturn("password");
+        when(userMapper.createUser(userRegistrationDTO)).thenReturn(user);
         when(this.userRepository.save(any(User.class))).thenReturn(user);
 
         User savedUser = this.userService.saveUser(userRegistrationDTO);
@@ -76,6 +86,7 @@ class UserServiceTest {
         assertNotNull(savedUser);
         assertEquals(user.getEmail(), savedUser.getEmail());
         assertEquals(user.getName(), savedUser.getName());
+        verify(userMapper).createUser(userRegistrationDTO);
     }
 
     @Test

@@ -6,6 +6,7 @@ import mirkoabozzi.Car_Catalog.dto.request.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
 import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
+import mirkoabozzi.Car_Catalog.mappers.CarMapper;
 import mirkoabozzi.Car_Catalog.repositories.CarRepository;
 import mirkoabozzi.Car_Catalog.specification.CarSpecification;
 import org.springframework.data.domain.Page;
@@ -23,16 +24,10 @@ import java.util.UUID;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final CarMapper carMapper;
 
     public Car saveCar(CarDTO body) {
-
-        Car newCar = new Car(
-                body.brand(),
-                body.model(),
-                body.productionYear(),
-                body.price(),
-                VehicleStatus.valueOf(body.vehicleStatus().toUpperCase())
-        );
+        Car newCar = this.carMapper.createCar(body);
         return this.carRepository.save(newCar);
     }
 

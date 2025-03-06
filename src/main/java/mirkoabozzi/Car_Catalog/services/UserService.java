@@ -8,6 +8,7 @@ import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
 import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
+import mirkoabozzi.Car_Catalog.mappers.UserMapper;
 import mirkoabozzi.Car_Catalog.repositories.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     public User findById(UUID id) {
         return this.userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id " + id + " not found on DB"));
@@ -42,15 +44,7 @@ public class UserService {
     public User saveUser(UserRegistrationDTO body) {
         if (this.userRepository.existsByEmail(body.email()))
             throw new BadRequestException("Email " + body.email() + " already on DB");
-
-        User newUser = new User(
-                body.name(),
-                body.surname(),
-                body.email(),
-                this.passwordEncoder.encode(body.password()),
-                (body.email().equals("mirko.abozzi@gmail.com") ? UserRole.ADMIN : UserRole.USER),
-                true
-        );
+        User newUser = this.userMapper.createUser(body);
         return this.userRepository.save(newUser);
     }
 

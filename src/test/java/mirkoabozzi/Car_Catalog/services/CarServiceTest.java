@@ -3,6 +3,7 @@ package mirkoabozzi.Car_Catalog.services;
 import mirkoabozzi.Car_Catalog.dto.request.CarDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
+import mirkoabozzi.Car_Catalog.mappers.CarMapper;
 import mirkoabozzi.Car_Catalog.repositories.CarRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ import static org.mockito.Mockito.when;
 class CarServiceTest {
     @Mock
     private CarRepository carRepository;
+    @Mock
+    private CarMapper carMapper;
 
     @InjectMocks
     private CarService carService;
@@ -36,13 +39,20 @@ class CarServiceTest {
     @BeforeEach
     void setUp() {
         this.carDTO = new CarDTO("Alfa", "Mito", 2009, new BigDecimal(10000), String.valueOf(VehicleStatus.AVAILABLE));
-        this.car = new Car("Alfa", "Mito", 2009, new BigDecimal(10000), VehicleStatus.AVAILABLE);
+        this.car = Car.builder()
+                .brand("Alfa")
+                .model("Mito")
+                .productionYear(2009)
+                .price(new BigDecimal(10000))
+                .vehicleStatus(VehicleStatus.AVAILABLE)
+                .build();
         this.id = UUID.randomUUID();
     }
 
     @Test
     void saveCar() {
         when(this.carRepository.save(any(Car.class))).thenReturn(car);
+        when(carMapper.createCar(carDTO)).thenReturn(car);
 
         Car carSaved = this.carService.saveCar(carDTO);
 
@@ -53,7 +63,13 @@ class CarServiceTest {
 
     @Test
     void updateCar() {
-        Car updatedCar = new Car("Alfa", "Giulietta", 2015, new BigDecimal(15000), VehicleStatus.SOLD);
+        Car updatedCar = Car.builder()
+                .brand("Alfa")
+                .model("Giulietta")
+                .productionYear(2015)
+                .price(new BigDecimal(15000))
+                .vehicleStatus(VehicleStatus.SOLD)
+                .build();
         when(this.carRepository.findById(id)).thenReturn(Optional.of(car));
         when(this.carRepository.save(any(Car.class))).thenReturn(updatedCar);
 
