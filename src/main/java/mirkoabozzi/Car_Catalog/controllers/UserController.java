@@ -6,20 +6,16 @@ import mirkoabozzi.Car_Catalog.dto.request.UpdateUserRoleDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UserDTO;
 import mirkoabozzi.Car_Catalog.dto.response.UserRespDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
-import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,13 +56,8 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public UserRespDTO updateRole(@PathVariable UUID id, @RequestBody @Validated UpdateUserRoleDTO body, BindingResult validation) {
-        if (validation.hasErrors()) {
-            String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
-            throw new BadRequestException("Body error: " + msg);
-        } else {
-            User user = this.userService.updateUserRole(id, body);
-            return this.modelMapper.map(user, UserRespDTO.class);
-        }
+    public UserRespDTO updateRole(@PathVariable UUID id, @RequestBody @Validated UpdateUserRoleDTO body) {
+        User user = this.userService.updateUserRole(id, body);
+        return this.modelMapper.map(user, UserRespDTO.class);
     }
 }

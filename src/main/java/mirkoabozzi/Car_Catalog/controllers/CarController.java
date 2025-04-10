@@ -6,20 +6,16 @@ import mirkoabozzi.Car_Catalog.dto.request.CarDTO;
 import mirkoabozzi.Car_Catalog.dto.request.UpdateCarStatusDTO;
 import mirkoabozzi.Car_Catalog.dto.response.CarRespDTO;
 import mirkoabozzi.Car_Catalog.entities.Car;
-import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
 import mirkoabozzi.Car_Catalog.services.CarService;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,14 +28,9 @@ public class CarController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CarRespDTO save(@RequestBody @Validated CarDTO body, BindingResult validation) {
-        if (validation.hasErrors()) {
-            String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
-            throw new BadRequestException("Body error: " + msg);
-        } else {
-            Car car = this.carService.saveCar(body);
-            return modelMapper.map(car, CarRespDTO.class);
-        }
+    public CarRespDTO save(@RequestBody @Validated CarDTO body) {
+        Car car = this.carService.saveCar(body);
+        return modelMapper.map(car, CarRespDTO.class);
     }
 
     @GetMapping
@@ -89,26 +80,16 @@ public class CarController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CarRespDTO updateCar(@PathVariable UUID id, @RequestBody @Validated CarDTO body, BindingResult validation) {
-        if (validation.hasErrors()) {
-            String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
-            throw new BadRequestException("Body error: " + msg);
-        } else {
-            Car car = this.carService.updateCar(id, body);
-            return this.modelMapper.map(car, CarRespDTO.class);
-        }
+    public CarRespDTO updateCar(@PathVariable UUID id, @RequestBody @Validated CarDTO body) {
+        Car car = this.carService.updateCar(id, body);
+        return modelMapper.map(car, CarRespDTO.class);
     }
 
     @PatchMapping("{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public CarRespDTO updateCarStatus(@PathVariable UUID id, @RequestBody @Validated UpdateCarStatusDTO body, BindingResult validation) {
-        if (validation.hasErrors()) {
-            String msg = validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
-            throw new BadRequestException("Body error: " + msg);
-        } else {
-            Car car = this.carService.updateCarStatus(id, body);
-            return this.modelMapper.map(car, CarRespDTO.class);
-        }
+    public CarRespDTO updateCarStatus(@PathVariable UUID id, @RequestBody @Validated UpdateCarStatusDTO body) {
+        Car car = this.carService.updateCarStatus(id, body);
+        return modelMapper.map(car, CarRespDTO.class);
     }
 
     @DeleteMapping("{id}")
