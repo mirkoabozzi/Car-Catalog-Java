@@ -2,6 +2,7 @@ package mirkoabozzi.Car_Catalog.mappers;
 
 import lombok.RequiredArgsConstructor;
 import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
+import mirkoabozzi.Car_Catalog.dto.response.UserRespDTO;
 import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,17 @@ public class UserMapper {
                 .password(passwordEncoder.encode(body.password()))
                 .userRole(body.email().equals("mirko.abozzi@gmail.com") ? UserRole.ADMIN : UserRole.USER)
                 .isEnabled(true)
+                .build();
+    }
+
+    public UserRespDTO userToDTO(User user) {
+        return UserRespDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .userRole(user.getUserRole())
+                .isEnabled(user.getIsEnabled())
                 .build();
     }
 }
