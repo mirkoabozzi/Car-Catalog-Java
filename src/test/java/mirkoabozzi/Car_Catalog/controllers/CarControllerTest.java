@@ -1,8 +1,12 @@
 package mirkoabozzi.Car_Catalog.controllers;
 
+import mirkoabozzi.Car_Catalog.entities.User;
+import mirkoabozzi.Car_Catalog.enums.UserRole;
+import mirkoabozzi.Car_Catalog.repositories.UserRepository;
+import mirkoabozzi.Car_Catalog.security.JWTTools;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -19,10 +23,39 @@ class CarControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Value("${jwt.test.admin.token}")
+    @Autowired
+    private JWTTools jwtTools;
+    @Autowired
+    private UserRepository userRepository;
     private String adminToken;
-    @Value("${jwt.test.user.token}")
     private String userToken;
+
+    @BeforeEach
+    void setUp() {
+        User adminUser = User.builder()
+                .name("Admin")
+                .surname("test")
+                .email("admin@test.com")
+                .password("password")
+                .userRole(UserRole.ADMIN)
+                .isEnabled(true)
+                .build();
+        this.userRepository.save(adminUser);
+        this.adminToken = jwtTools.generateToken(adminUser);
+
+        User userUser = User.builder()
+                .name("User")
+                .surname("test")
+                .email("user@test.com")
+                .password("password")
+                .userRole(UserRole.USER)
+                .isEnabled(true)
+                .build();
+
+        this.userRepository.save(userUser);
+        this.userToken = jwtTools.generateToken(userUser);
+
+    }
 
     @Test
     void save() throws Exception {
@@ -37,7 +70,7 @@ class CarControllerTest {
                 }""";
 
         mockMvc.perform(post("/api/cars")
-                        .header("Authorization", adminToken)
+                        .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newCar))
                 .andExpect(status().isOk())
@@ -71,7 +104,7 @@ class CarControllerTest {
     void findAllOk() throws Exception {
 
         mockMvc.perform(get("/api/cars")
-                        .header("Authorization", adminToken))
+                        .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk());
 
     }
@@ -87,7 +120,7 @@ class CarControllerTest {
     void findByBrand() throws Exception {
 
         mockMvc.perform(get("/api/cars/brand")
-                        .header("Authorization", userToken)
+                        .header("Authorization", "Bearer " + userToken)
                         .param("brand", "New")
                         .param("page", "0")
                         .param("size", "10")
