@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public UserRespDTO updateMyProfile(@AuthenticationPrincipal User authUser, @RequestBody UserDTO body) {
+    public UserRespDTO updateMyProfile(@AuthenticationPrincipal User authUser, @RequestBody @Validated UserDTO body) {
         User user = this.userService.updateUser(authUser, body);
         return this.modelMapper.map(user, UserRespDTO.class);
     }

@@ -5,6 +5,7 @@ import mirkoabozzi.Car_Catalog.entities.Car;
 import mirkoabozzi.Car_Catalog.enums.VehicleStatus;
 import mirkoabozzi.Car_Catalog.mappers.CarMapper;
 import mirkoabozzi.Car_Catalog.repositories.CarRepository;
+import mirkoabozzi.Car_Catalog.services.impl.CarServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,7 @@ class CarServiceTest {
     private CarMapper carMapper;
 
     @InjectMocks
-    private CarService carService;
+    private CarServiceImpl carServiceImpl;
 
     private CarDTO carDTO;
     private Car car;
@@ -54,7 +55,7 @@ class CarServiceTest {
         when(this.carRepository.save(any(Car.class))).thenReturn(car);
         when(carMapper.createCar(carDTO)).thenReturn(car);
 
-        Car carSaved = this.carService.saveCar(carDTO);
+        Car carSaved = this.carServiceImpl.saveCar(carDTO);
 
         assertNotNull(carSaved);
         assertEquals(car.getBrand(), carSaved.getBrand());
@@ -75,7 +76,7 @@ class CarServiceTest {
 
         CarDTO updateDTO = new CarDTO("Alfa", "Giulietta", 2015, new BigDecimal(15000), "SOLD");
 
-        Car result = this.carService.updateCar(id, updateDTO);
+        Car result = this.carServiceImpl.updateCar(id, updateDTO);
 
         assertNotNull(result);
         assertEquals("Alfa", result.getBrand());
@@ -87,7 +88,7 @@ class CarServiceTest {
     void deleteCar() {
         when(this.carRepository.findById(id)).thenReturn(Optional.of(car));
 
-        this.carService.deleteCar(id);
+        this.carServiceImpl.deleteCar(id);
 
         verify(this.carRepository).delete(car);
     }

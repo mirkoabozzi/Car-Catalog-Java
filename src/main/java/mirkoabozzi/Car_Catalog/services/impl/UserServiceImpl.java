@@ -1,0 +1,79 @@
+package mirkoabozzi.Car_Catalog.services.impl;
+
+import lombok.RequiredArgsConstructor;
+import mirkoabozzi.Car_Catalog.dto.request.UpdateUserRoleDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserDTO;
+import mirkoabozzi.Car_Catalog.dto.request.UserRegistrationDTO;
+import mirkoabozzi.Car_Catalog.entities.User;
+import mirkoabozzi.Car_Catalog.enums.UserRole;
+import mirkoabozzi.Car_Catalog.exceptions.BadRequestException;
+import mirkoabozzi.Car_Catalog.exceptions.NotFoundException;
+import mirkoabozzi.Car_Catalog.mappers.UserMapper;
+import mirkoabozzi.Car_Catalog.repositories.UserRepository;
+import mirkoabozzi.Car_Catalog.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
+
+    @Override
+    public User findById(UUID id) {
+        return this.userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id " + id + " not found on DB"));
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return this.userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email " + email + " not found on DB"));
+    }
+
+    @Override
+    public Page<User> findAll(int page, int size, String sortBy) {
+        if (page > 100) page = 100;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return this.userRepository.findAll(pageable);
+    }
+
+    @Override
+    public User saveUser(UserRegistrationDTO body) {
+        if (this.userRepository.existsByEmail(body.email()))
+            throw new BadRequestException("Email " + body.email() + " already on DB");
+        User newUser = this.userMapper.createUser(body);
+        return this.userRepository.save(newUser);
+    }
+
+    @Override
+    public User updateUser(User authUser, UserDTO body) {
+        if (!authUser.getEmail().equals(body.email()) && this.userRepository.existsByEmail(body.email()))
+            throw new BadRequestException("Email " + body.email() + " already on DB");
+
+        authUser.setName(body.name());
+        authUser.setSurname(body.surname());
+        authUser.setEmail(body.email());
+        return this.userRepository.save(authUser);
+    }
+
+    @Override
+    public void deleteUser(UUID id) {
+        User userFound = this.findById(id);
+        this.userRepository.delete(userFound);
+    }
+
+    @Override
+    public User updateUserRole(UUID id, UpdateUserRoleDTO updateUserRoleDTO) {
+        User userFound = this.findById(id);
+        userFound.setUserRole(UserRole.valueOf(updateUserRoleDTO.userRole().toUpperCase()));
+        return this.userRepository.save(userFound);
+    }
+}

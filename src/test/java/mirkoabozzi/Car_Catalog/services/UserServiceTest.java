@@ -5,6 +5,7 @@ import mirkoabozzi.Car_Catalog.entities.User;
 import mirkoabozzi.Car_Catalog.enums.UserRole;
 import mirkoabozzi.Car_Catalog.mappers.UserMapper;
 import mirkoabozzi.Car_Catalog.repositories.UserRepository;
+import mirkoabozzi.Car_Catalog.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ class UserServiceTest {
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     private UserRegistrationDTO userRegistrationDTO;
     private User user;
@@ -59,7 +60,7 @@ class UserServiceTest {
     void findByEmail() {
         when(this.userRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
 
-        User userFound = this.userService.findByEmail("user@test.com");
+        User userFound = this.userServiceImpl.findByEmail("user@test.com");
 
         assertNotNull(userFound);
         assertEquals("user@test.com", userFound.getEmail());
@@ -69,7 +70,7 @@ class UserServiceTest {
     void findById() {
         when(this.userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
 
-        User userFound = this.userService.findById(id);
+        User userFound = this.userServiceImpl.findById(id);
 
         assertNotNull(userFound);
         assertEquals(user.getEmail(), userFound.getEmail());
@@ -81,7 +82,7 @@ class UserServiceTest {
         when(userMapper.createUser(userRegistrationDTO)).thenReturn(user);
         when(this.userRepository.save(any(User.class))).thenReturn(user);
 
-        User savedUser = this.userService.saveUser(userRegistrationDTO);
+        User savedUser = this.userServiceImpl.saveUser(userRegistrationDTO);
 
         assertNotNull(savedUser);
         assertEquals(user.getEmail(), savedUser.getEmail());
@@ -93,7 +94,7 @@ class UserServiceTest {
     void deleteUser() {
         when(this.userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        this.userService.deleteUser(id);
+        this.userServiceImpl.deleteUser(id);
 
         verify(this.userRepository).delete(user);
     }
